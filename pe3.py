@@ -23,3 +23,14 @@ def decode(input_text, shift):
         else:
             decoded_text += char
     return decoded_text
+
+class BankAccount:
+    name = "Rainy"
+    id = "1234"
+    created_date = datetime.date.today()
+    balance: int = 0
+    def deposit(self, amount):
+        self.balance += amount
+    def withdraw(self, amount):
+    def view_balance(self):
+        return self.balance
