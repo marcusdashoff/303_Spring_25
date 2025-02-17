@@ -1,28 +1,18 @@
+import string
+
 def encode(input_text, shift):
-    alphabet = list(string.ascii_lowercase)
+    begin_position = ord('a')
     encoded_text = ""
     for char in input_text:
-        if char in alphabet:
-            index = (alphabet.index(char) + shift)
-            if index >= len(alphabet):
-                index -= len(alphabet)
-            encoded_text += alphabet[index]
+        if char.lower() in string.ascii_lowercase:
+           new_position = (ord(char.lower()) - begin_position + shift) % 26 + begin_position
+           encoded_text += chr(new_position)
         else:
             encoded_text += char
-    return (alphabet, encoded_text)
+    return (list(string.ascii_lowercase),encoded_text)
 
 def decode(input_text, shift):
-    alphabet = list(string.ascii_lowercase)
-    decoded_text = ""
-    for char in input_text:
-        if char in alphabet:
-            index = (alphabet.index(char) - shift)
-            if index < 0:
-                index += len(alphabet)
-            decoded_text += alphabet[index]
-        else:
-            decoded_text += char
-    return decoded_text
+    return encode(input_text, -shift)[1]
 
 class BankAccount:
     name = "Rainy"
