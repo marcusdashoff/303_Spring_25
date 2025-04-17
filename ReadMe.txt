@@ -17,3 +17,9 @@ task # description assignment solution
 6
 7
 8
+
+
+Identification of possible issues
+creation of tasks
+assignment of tasks
+description of each issue and how it was resolved
