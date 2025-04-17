@@ -8,6 +8,7 @@ import time
 import wikipedia
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from contextlib import contextmanager
+import os
 
 #convert objects produced by wikipedia package to a string var for saving to text file
 def convert_to_str(obj):
@@ -18,12 +19,12 @@ def dl_and_save(item):
     page = wikipedia.page(item, auto_suggest=False)
     title = page.title
     references = convert_to_str(page.references)
-    out_filename = title + ".txt"
+    os.makedirs("wiki_dl", exist_ok=True)
+    out_filename = "wiki_dl/" + title + ".txt"
     print(f'writing to {out_filename}')
     with open(out_filename, 'w') as fileobj:
       fileobj.write(references)
 
-# IMPLEMENTATION 1: sequential example
 @contextmanager
 def measure_time(label):
   t_start = time.perf_counter()
@@ -31,30 +32,34 @@ def measure_time(label):
   t_end = time.perf_counter()
   print(f'{label} executed in {t_end - t_start} seconds')
 
-def wiki_sequentially():
+def wiki_sequentially(results):
   print('\nsequential function:')
   with measure_time("Sequential function"):
-    results = wikipedia.search("general artificial intelligence")
     for item in results:
       dl_and_save(item)
 
-# IMPLEMENTATION 2: concurrent example w/ threads
-def concurrent_threads():
+def concurrent_threads(results):
   print('\nthread pool function:')
   with measure_time("Thread pool function"):
-    results = wikipedia.search("general artificial intelligence")
     with ThreadPoolExecutor() as executor:
       executor.map(dl_and_save, results)
 
-# IMPLEMENTATION 3: concurrent example w/ processes
-def concurrent_process():
+def concurrent_process(results):
   print('\nprocess pool function:')
   with measure_time("Process pool function"):
-    results = wikipedia.search("general artificial intelligence")
     with ProcessPoolExecutor() as executor:
       executor.map(dl_and_save, results)
 
 if __name__ == "__main__":
-  wiki_sequentially()
-  concurrent_threads()
-  concurrent_process()
+  user_input = input("What ya tryna search: ")
+  
+  if len(user_input) < 4:
+    user_input = "general artificial intelligence"
+  results = wikipedia.search(user_input)
+  
+  try:
+    wiki_sequentially(results)
+    concurrent_threads(results)
+    concurrent_process(results)
+  except:
+    print("Ambigious search. Neeed more details!!!")
